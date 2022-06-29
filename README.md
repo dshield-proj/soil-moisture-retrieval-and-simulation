@@ -4,13 +4,15 @@ This repository is for generating soil moisture retrieval performance metrics fo
 It uses a forward model and an optimizer to find the performance metric 
 
 For more info   
-Amer Melebari, Sreeja Nag, Vinay Ravindra, Mahta Moghaddam, "Soil Moisture Retrieval from Multi-Instrument and Multi-Frequency Simulated Measurements in Support of Future Earth Observing Systems" IGARSS 2022
+Amer Melebari, Sreeja Nag, Vinay Ravindra, Mahta Moghaddam, "Soil Moisture Retrieval from Multi-Instrument and Multi-Frequency Simulated Measurements in Support of Future Earth Observing Systems" IGARSS 2022   
 
-This repository does not contain the forward model code. Please contact the author to get the code.  
+This repository does not contain the forward model code. Please contact Amer melebari (amelebar@usc.edu) or Mahta Moghaddam (mahta@usc.edu) to get access to the code.  
+
 ## System requirement  
 This code required both `FORTRAN` and `Python 3.9+`.  
 The code should work with any operating system, however, it has been tested on Ubuntu 20.4 and 22.4  
-## Requirement installation
+
+## Requirement installation  
 
 You can install the required Python packages using the following code
 
@@ -25,11 +27,11 @@ sudo apt-get install gfortran
 ```
 
 To compile the FORTRAN code (forward model) use one of the following methods:   
-Run the following shell code  
+Run the following shell code (The code is not in this repository).  
 ```bash  
 bash compile_fortran_codes.sh
-```
-
+```  
+   
 ## Example of running the code
 
 ### Generate retrieval performance metric   
@@ -70,9 +72,9 @@ Secondly, generate soil moisture retrieval metrics using Mont Carlo simulations 
 ```bash 
 python3 estimate_sm_performance.py -g VEG_TABLE_PATH -o out_dshield_data --num_trials 10  --in_json_file dshield_input/instruments_inc_angles_and_observations.json --out_xls_name dshield_sim.xlsx --standalone  --skip_if_exist --verbose 
 ```
-where ``VEG_TABLE_PATH`` is the path to the vegetation parameters table, `out_dshield_data` is the output folder path, and ``--num_trials`` is the number of trials in the Mont Carlo simulation. 
-The `--standalone` option estimates the performance of each combination in a separate file, each file ends with random code. This is useful when parallelizing the code, as each row can run in a separate machine.  
-The option `--skip_if_exist` make the code skip a row if the result of this row is in `dshield_sim.json`.  The `--verbose` option make the code write to the screen the progress details.
+where ``VEG_TABLE_PATH`` is the path to the vegetation parameters table, `out_dshield_data` is the output folder path, and ``--num_trials`` is the number of trials in the Mont Carlo simulation.  
+The `--standalone` option estimates the performance of each combination in a separate file, each file ends with random code. This is useful when parallelizing the code, as each row can run in a separate machine.   
+The option `--skip_if_exist` make the code skip a row if the result of this row is in `dshield_sim.json`.  The `--verbose` option make the code write to the screen the progress details.  
 
 The output files will be `dshield_sim_*.xlsx` and ``dshield_sim_*.json``. The * is an 8 character with the first 4 character are the row number and the rest are random characters.   
 If you run the code without the option `--standalone`, only two files will be generated; `dshield_sim.json` and `dshield_sim.xlsx`. 

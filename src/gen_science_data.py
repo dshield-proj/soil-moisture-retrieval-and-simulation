@@ -9,6 +9,7 @@ from util.save_data import NumpyArrayEncoder
 import argparse
 import datetime
 import datetime as dt
+import git
 import h5py
 import json
 import numpy as np
@@ -226,7 +227,7 @@ def generate_out_sim_soil_moisture(experiment_folder: str, experiment_run_id: st
         # replace nan by fill value
         gp_data['simulated_soil_moisture'][np.isnan(gp_data['simulated_soil_moisture'])] = NO_SM_VAL
         end_time = dt.datetime.utcnow()
-        science_data_folder = os.path.join(experiment_folder, 'science_data')
+        science_data_folder = os.path.join(experiment_folder, 'science_data', run_id)
         check_folder(science_data_folder)
         file_date_str = current_epoch.strftime("%Y%m%dT%H%M%S")
         partial_out_file_name = f'science_data_{experiment_run_id}_{file_date_str}'
@@ -241,12 +242,12 @@ def generate_out_sim_soil_moisture(experiment_folder: str, experiment_run_id: st
                                'time': [time_.isoformat() for time_ in gp_data['time']],
                                'geophysicalValue': gp_data['simulated_soil_moisture']})
         df_out.to_csv(out_csv_file_path, index=False)
-
+        git_sha = git.Repo(search_parent_directories=True).head.object.hexsha
         science_data_dic = {
             "type": "ScienceData",
-            "runId": "run_id",
+            "runId": f"{run_id}",
             "createdTime": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "file_epoch": min(files_epoch_list).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "file_epoch": current_epoch.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "duration": int(out_files_duration / dt.timedelta(hours=1)),
             "geophysicalVar": {
                 "property": "SOIL MOISTURE",
@@ -258,20 +259,20 @@ def generate_out_sim_soil_moisture(experiment_folder: str, experiment_run_id: st
                     "startTime": start_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "endTime": end_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "processTime": f'{(end_time - start_time) / dt.timedelta(hours=1):.2}',
-                    "personnelTime": 0.5,
+                    "personnelTime": 0.25,
                     "timeFactor": 1
                 },
                 "software": {
                     "name": "Python",
-                    "version": "",
-                    "gitUrl": "https://bitbucket.org/usc_mixil/multi-instruments-soil-moisture-retrieval/",
-                    "commit": ""
+                    "version": "0.3",
+                    "gitUrl": "https://github.com/dshield-proj/soil-moisture-retrieval-and-simulation",
+                    "commit": f"{git_sha}"
                 },
                 "machine": {
                     "type": "PC",
                     "processor": "10th gen Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz",
                     "ram": 64,
-                    "OS": "Ubuntu 20.04"
+                    "OS": "Ubuntu 22.04"
                 }
             }
         }

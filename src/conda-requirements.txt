@@ -1,4 +1,5 @@
 astropy
+gitpython
 h5py
 matplotlib
 numba
