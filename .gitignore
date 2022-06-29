@@ -1,3 +1,19 @@
+
+# IDE
+.idea/
+
+# Python
+*__pycache__/
+*.pyc
+
+# temp files
+*#
+
+# images
+*.png
+*.svg
+*.pdf
+
 # Prerequisites
 *.d
 
